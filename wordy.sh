@@ -17,7 +17,16 @@ E="\033[1;30m"
 bold=$(tput bold)
 norm=$(tput sgr0)
 
-TOTAL_SOLUTIONS="$(look . |grep -v "'"|grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]' | grep -E "^.....$")"
+WORDFILE="${1:-}"
+get_all_words(){
+    if [[ -f "$WORDFILE" ]]; then
+        cat "$WORDFILE" | grep -v "'" | grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]' | grep -E "^.....$"
+    else
+        look . | grep -v "'" | grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]' | grep -E "^.....$"
+    fi
+}
+TOTAL_SOLUTIONS="$(get_all_words)"
+TOTAL_SOLUTIONS_NUMBER="$(echo "$TOTAL_SOLUTIONS" | wc -l)"
 STATFILE="$HOME/.cache/wordy/statistics.txt"
 DB=""
 DB2=""
@@ -212,7 +221,7 @@ new_game(){
 	COMMENT=" Enter 5 letter word"
 	COMMENT_STR="${COMMENT}${PAD}"
 	PLACEHOLDER_STR="$WORD_STR${PAD}"
-	SOLUTION="$(look . | grep -v "'" | grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]'| grep -E "^.....$" | shuf | head -1)"
+	SOLUTION="$(get_all_words | shuf | head -1)"
 	TRY=0
     EXPENDED=""
 }
