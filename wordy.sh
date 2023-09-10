@@ -214,6 +214,7 @@ new_game(){
 	PLACEHOLDER_STR="$WORD_STR${PAD}"
 	SOLUTION="$(look . | grep -v "'" | grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]'| grep -E "^.....$" | shuf | head -1)"
 	TRY=0
+    EXPENDED=""
 }
 
 play_menu(){
