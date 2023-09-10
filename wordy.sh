@@ -221,7 +221,7 @@ play_menu(){
 
 	while [[ $DB2 != "M" ]]; do
 		print_box
-		echo -en "│   ${Y}${bold}<enter>${norm}    to ${G}${bold}ACCEPT word${norm}       │\n│  ${Y}${bold}<delete>${norm}    to ${R}${bold}ABORT word${norm}        │\n│ ${Y}${bold}<backspace>${norm}  to ${R}${bold}DELETE letter${norm}     │\n├───────────────────────────────────┤\n│      ${Y}${bold}W${norm}       to show ${C}${bold}WORD LIST${norm}    │\n├───────────────────────────────────┤\n│      ${Y}${bold}M${norm}       to go to ${G}${bold}MAIN MENU${norm}   │\n│      ${Y}${bold}N${norm}       to play  ${G}${bold}NEW GAME${norm}    │\n│      ${Y}${bold}Q${norm}       to ${R}${bold}QUIT GAME${norm}         │\n├───────────────────────────────────┤\n│${COMMENT_STR:0:35}│\n╰───────────────────────────────────╯\n"
+		echo -en "│   ${Y}${bold}<enter>${norm}    to ${G}${bold}ACCEPT word${norm}       │\n│  ${Y}${bold}<delete>${norm}    to ${R}${bold}ABORT word${norm}        │\n│ ${Y}${bold}<backspace>${norm}  to ${R}${bold}DELETE letter${norm}     │\n├───────────────────────────────────┤\n│      ${Y}${bold}W${norm}       to show ${C}${bold}WORD LIST${norm}    │\n│      ${Y}${bold}C${norm}       to show ${C}${bold}LETTERS${norm}      │\n├───────────────────────────────────┤\n│      ${Y}${bold}M${norm}       to go to ${G}${bold}MAIN MENU${norm}   │\n│      ${Y}${bold}N${norm}       to play  ${G}${bold}NEW GAME${norm}    │\n│      ${Y}${bold}Q${norm}       to ${R}${bold}QUIT GAME${norm}         │\n├───────────────────────────────────┤\n│${COMMENT_STR:0:35}│\n╰───────────────────────────────────╯\n"
 		read -rsn 1 DB2
 		if [[ $(echo "$DB2" | od) = "$BACKSPACE" ]] && [[ ${#WORD_STR} -gt 0 ]]; then
             WORD_STR="${WORD_STR::-1}"
@@ -261,6 +261,13 @@ play_menu(){
             "W")
                 clear
                 echo -e "${Y}${bold}ALL POSSIBLE WORDS ($TOTAL_SOLUTIONS_NUMBER)${norm}\n\n$(echo $TOTAL_SOLUTIONS | sed 's/ /\n/g')\n\n${Y}${bold}Press any key to return${norm}"
+                read -rsN 1
+                clear
+            ;;
+            "C")
+                clear
+                echo -e "${Y}${bold}REMAINING LETTERS${norm}\n\n"
+                echo {A..Z} | tr -d "$EXPENDED"
                 read -rsN 1
                 clear
             ;;
