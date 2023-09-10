@@ -38,37 +38,10 @@ As mentioned above, there are **6 guesses** to find the secret word.
 
   If your distro doesn't include this installed, you can install the respective package (`wordlist`, `words`) using the respective command (`apt`, `pacman`).
 
-* Another, much less important dependency is [lolcat](https://github.com/busyloop/lolcat).
-
- `lolcat` helps show the *Statistics* in **color**, and therefore more fun.
-
- ![7.png](png/7.png)
-
- To install `lolcat`
-
-  * Debian based:
-
-    ```
-    sudo apt install lolcat
-    ```
-
- * Arch based:
-
-    ```
-    sudo pacman -S lolcat
-    ```
-
- * CentOS, RHEL, Fedora:
-
-    ```
-    sudo dnf install lolcat
-    ```
-
-
 ### Install
 
 ```
-git clone https://gitlab.com/christosangel/wordy.git
+git clone https://github.com/LokiLuciferase/wordy.git
 
 cd wordy/
 
@@ -84,15 +57,6 @@ cp wordy.sh ~/.local/bin/
 
 ```
 
-After that, the user must run this command in order to create the necessary directories and files:
-
-```
-mkdir ~/.cache/wordy/
-
-cp statistics.txt wordy.png ~/.cache/wordy/
-
-```
-
 ### Run
 
 Just run:
@@ -100,6 +64,8 @@ Just run:
 ```
 wordy.sh
 ```
+This code is forked from: [wordly](https://gitlab.com/christosangel/wordy)
+
 This TUI game was inspired by [wordle](https://www.nytimes.com/games/wordle/index.html)
 
 There is another project that might interest you:
