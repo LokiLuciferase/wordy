@@ -13,6 +13,7 @@ M="\033[1;35m"
 R="\033[1;31m"
 B="\033[1;34m"
 W="\033[1;37m"
+E="\033[1;30m"
 bold=$(tput bold)
 norm=$(tput sgr0)
 
@@ -20,6 +21,7 @@ TOTAL_SOLUTIONS="$(look . |grep -v "'"|grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,�
 STATFILE="$HOME/.cache/wordy/statistics.txt"
 DB=""
 DB2=""
+EXPENDED=""
 BACKSPACE=$(cat << eof
 0000000 005177
 0000002
@@ -97,10 +99,14 @@ check_guess(){
             F0[q]="G"
         elif [[ "$SOLUTION" == *"${WORD_STR:q:1}"* ]]; then
             F0[q]="Y"
+        else
+            EXPENDED="${EXPENDED}${WORD_STR:q:1}"
         fi
 		F[TRY]=$(echo ${F0[@]} | sed 's/ //g')
 	done
-	COMMENT=" Enter 5-letter word"
+    EXPENDED="$(echo "$EXPENDED" | tr -s 'a-z' | grep -o . | sort | uniq | tr -d '\n')"
+    EXPENDED=${EXPENDED^^}
+    COMMENT=" Enter 5 letter word"
 }
 
 enter_word(){
@@ -158,8 +164,18 @@ print_box(){
 
     if [[ ${F[TRY]} != "GGGGG" ]]; then
         A=${PLACEHOLDER_STR^^}
-        echo -e "│     ╭───╮╭───╮╭───╮╭───╮╭───╮     │\n│     │ ${A:0:1} ││ ${A:1:1} ││ ${A:2:1} ││ ${A:3:1} ││ ${A:4:1} │     │\n│     ╰───╯╰───╯╰───╯╰───╯╰───╯     │"
-        echo  "├───────────────────────────────────┤"
+        fmt=( '' '' '' '' '' )
+        for i in {0..4}; do
+            if [[ "$EXPENDED" == *"${A:i:1}"* ]]; then
+                fmt[i]="$E"
+            else
+                fmt[i]=""
+            fi
+        done
+        echo "│     ╭───╮╭───╮╭───╮╭───╮╭───╮     │"
+        echo -e "│     │ ${fmt[0]}${A:0:1}${norm} ││ ${fmt[1]}${A:1:1}${norm} ││ ${fmt[2]}${A:2:1}${norm} ││ ${fmt[3]}${A:3:1}${norm} ││ ${fmt[4]}${A:4:1}${norm} │     │"
+        echo "│     ╰───╯╰───╯╰───╯╰───╯╰───╯     │"
+        echo "├───────────────────────────────────┤"
     fi
 }
 
@@ -187,14 +203,14 @@ rules() {
     ${Y}${bold}GOOD LUCK!${norm}
     \n\nPress any key to return"
 
-    read -rsN 1 v
+    read -rsN 1
     clear
 }
 
 new_game(){
 	PAD="                                      "
 	COMMENT=" Enter 5 letter word"
-	COMMENT_STR="$COMMENT"${PAD}
+	COMMENT_STR="${COMMENT}${PAD}"
 	PLACEHOLDER_STR="$WORD_STR${PAD}"
 	SOLUTION="$(look . | grep -v "'" | grep -v -E "[ê,è,é,ë,â,à,ô,ó,ò,ú,ù,û,ü,î,ì,ï,í,ç,ö,á,ñ]" | grep -v '[^[:lower:]]'| grep -E "^.....$" | shuf | head -1)"
     SOLUTION=polio
@@ -210,7 +226,7 @@ play_menu(){
 		read -rsn 1 DB2
 		if [[ $(echo "$DB2" | od) = "$BACKSPACE" ]] && [[ ${#WORD_STR} -gt 0 ]]; then
             WORD_STR="${WORD_STR::-1}"
-            PLACEHOLDER_STR="$WORD_STR""$PAD"
+            PLACEHOLDER_STR="${WORD_STR}${PAD}"
         fi
         case $DB2 in
             "M")
@@ -245,8 +261,8 @@ play_menu(){
             ;;
             "W")
                 clear
-                echo -e "${Y}${bold}ALL POSSIBLE WORDS ($TOTAL_SOLUTIONS_NUMBER)${norm}\n\n$(echo $TOTAL_SOLUTIONS |sed 's/ /\n/g')\n\n${Y}${bold}Press any key to return${norm}"
-                read -rsN 1 v
+                echo -e "${Y}${bold}ALL POSSIBLE WORDS ($TOTAL_SOLUTIONS_NUMBER)${norm}\n\n$(echo $TOTAL_SOLUTIONS | sed 's/ /\n/g')\n\n${Y}${bold}Press any key to return${norm}"
+                read -rsN 1
                 clear
             ;;
             *)
@@ -280,7 +296,7 @@ main(){
                 clear
                 show_statistics
                 echo -e "\nPress any key to return"
-                read -rsN 1 v
+                read -rsN 1
                 clear
             ;;
             4)
