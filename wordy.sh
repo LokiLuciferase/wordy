@@ -62,7 +62,7 @@ show_statistics(){
     won="$(cat "$STATFILE" | grep -c win)"
     suc_ratio="$(echo "scale=2; $won *100/ $played" | bc)"
     record="$(sort "$STATFILE" | grep win | head -1 | awk '{print $1}')"
-    max_row="$(uniq -c -s 1 "$STATFILE" | head -1 | awk '{print $1}')"
+    max_row="$(uniq -c -s 1 "$STATFILE" | grep win | tail -1 | awk '{print $1}')"
     echo -e "Games Played     : $played\nGames Won        : $won\nGames Lost       : $((played-won))\nSuccess ratio    : $suc_ratio%\nRecord Guesses   : $record\nMax wins in a row: $max_row\n"
 }
 
